@@ -509,7 +509,7 @@ export default function Home() {
     <div className="min-h-screen bg-gray-50 font-sans">
       <header className="bg-white shadow-md">
         <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8 flex justify-between items-center">
-          <h1 className="text-3xl font-bold text-gray-900">CSAT Dashboard</h1>
+          <h1 className="text-3xl font-bold text-gray-900">CSAT - Dashboard</h1>
           <button
             onClick={handleSyncData}
             disabled={loading || syncing}
