@@ -331,7 +331,7 @@ export default function Home() {
   // Add syncing state to show sync animation
   const [syncing, setSyncing] = useState(false);
   // Dark mode state
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
 
   // Toggle dark mode
   const toggleDarkMode = () => {
