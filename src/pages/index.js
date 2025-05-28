@@ -1,6 +1,313 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+// Configuration: Set to true to use mock data, false to use Google Sheets
+const USE_MOCK_DATA = true; // Change to true to use mock data
+
+// Mock data for testing
+const MOCK_DATA = [
+  {
+    Name: "John Smith",
+    Number: "+1234567890",
+    Brand: "TechCorp",
+    Tech: "4",
+    "Media ": "5",
+    "Solutions ": "4",
+    Date: "12/15/2023, 10:30 AM",
+    dateObj: new Date(2023, 11, 15),
+    month: 12,
+    year: 2023,
+    mediaScore: 5,
+    solutionsScore: 4,
+    techScore: 4,
+  },
+  {
+    Name: "Sarah Johnson",
+    Number: "+1234567891",
+    Brand: "InnovateInc",
+    Tech: "3",
+    "Media ": "4",
+    "Solutions ": "5",
+    Date: "12/14/2023, 2:15 PM",
+    dateObj: new Date(2023, 11, 14),
+    month: 12,
+    year: 2023,
+    mediaScore: 4,
+    solutionsScore: 5,
+    techScore: 3,
+  },
+  {
+    Name: "Mike Davis",
+    Number: "+1234567892",
+    Brand: "TechCorp",
+    Tech: "5",
+    "Media ": "3",
+    "Solutions ": "4",
+    Date: "12/13/2023, 9:45 AM",
+    dateObj: new Date(2023, 11, 13),
+    month: 12,
+    year: 2023,
+    mediaScore: 3,
+    solutionsScore: 4,
+    techScore: 5,
+  },
+  {
+    Name: "Emily Wilson",
+    Number: "+1234567893",
+    Brand: "GlobalTech",
+    Tech: "2",
+    "Media ": "4",
+    "Solutions ": "3",
+    Date: "12/12/2023, 4:20 PM",
+    dateObj: new Date(2023, 11, 12),
+    month: 12,
+    year: 2023,
+    mediaScore: 4,
+    solutionsScore: 3,
+    techScore: 2,
+  },
+  {
+    Name: "David Brown",
+    Number: "+1234567894",
+    Brand: "InnovateInc",
+    Tech: "4",
+    "Media ": "5",
+    "Solutions ": "5",
+    Date: "12/11/2023, 11:10 AM",
+    dateObj: new Date(2023, 11, 11),
+    month: 12,
+    year: 2023,
+    mediaScore: 5,
+    solutionsScore: 5,
+    techScore: 4,
+  },
+  {
+    Name: "Lisa Anderson",
+    Number: "+1234567895",
+    Brand: "TechCorp",
+    Tech: "3",
+    "Media ": "2",
+    "Solutions ": "3",
+    Date: "12/10/2023, 1:30 PM",
+    dateObj: new Date(2023, 11, 10),
+    month: 12,
+    year: 2023,
+    mediaScore: 2,
+    solutionsScore: 3,
+    techScore: 3,
+  },
+  {
+    Name: "Robert Taylor",
+    Number: "+1234567896",
+    Brand: "GlobalTech",
+    Tech: "5",
+    "Media ": "4",
+    "Solutions ": "4",
+    Date: "12/9/2023, 3:45 PM",
+    dateObj: new Date(2023, 11, 9),
+    month: 12,
+    year: 2023,
+    mediaScore: 4,
+    solutionsScore: 4,
+    techScore: 5,
+  },
+  {
+    Name: "Jennifer Martinez",
+    Number: "+1234567897",
+    Brand: "InnovateInc",
+    Tech: "4",
+    "Media ": "5",
+    "Solutions ": "4",
+    Date: "12/8/2023, 10:15 AM",
+    dateObj: new Date(2023, 11, 8),
+    month: 12,
+    year: 2023,
+    mediaScore: 5,
+    solutionsScore: 4,
+    techScore: 4,
+  },
+  {
+    Name: "Christopher Lee",
+    Number: "+1234567898",
+    Brand: "TechCorp",
+    Tech: "3",
+    "Media ": "3",
+    "Solutions ": "5",
+    Date: "12/7/2023, 2:50 PM",
+    dateObj: new Date(2023, 11, 7),
+    month: 12,
+    year: 2023,
+    mediaScore: 3,
+    solutionsScore: 5,
+    techScore: 3,
+  },
+  {
+    Name: "Amanda White",
+    Number: "+1234567899",
+    Brand: "GlobalTech",
+    Tech: "5",
+    "Media ": "4",
+    "Solutions ": "3",
+    Date: "12/6/2023, 12:25 PM",
+    dateObj: new Date(2023, 11, 6),
+    month: 12,
+    year: 2023,
+    mediaScore: 4,
+    solutionsScore: 3,
+    techScore: 5,
+  },
+  {
+    Name: "Kevin Garcia",
+    Number: "+1234567800",
+    Brand: "TechCorp",
+    Tech: "4",
+    "Media ": "5",
+    "Solutions ": "5",
+    Date: "12/5/2023, 9:30 AM",
+    dateObj: new Date(2023, 11, 5),
+    month: 12,
+    year: 2023,
+    mediaScore: 5,
+    solutionsScore: 5,
+    techScore: 4,
+  },
+  {
+    Name: "Michelle Rodriguez",
+    Number: "+1234567801",
+    Brand: "InnovateInc",
+    Tech: "2",
+    "Media ": "3",
+    "Solutions ": "4",
+    Date: "12/4/2023, 4:15 PM",
+    dateObj: new Date(2023, 11, 4),
+    month: 12,
+    year: 2023,
+    mediaScore: 3,
+    solutionsScore: 4,
+    techScore: 2,
+  },
+  {
+    Name: "Daniel Thompson",
+    Number: "+1234567802",
+    Brand: "GlobalTech",
+    Tech: "5",
+    "Media ": "4",
+    "Solutions ": "4",
+    Date: "12/3/2023, 11:45 AM",
+    dateObj: new Date(2023, 11, 3),
+    month: 12,
+    year: 2023,
+    mediaScore: 4,
+    solutionsScore: 4,
+    techScore: 5,
+  },
+  {
+    Name: "Jessica Clark",
+    Number: "+1234567803",
+    Brand: "TechCorp",
+    Tech: "3",
+    "Media ": "5",
+    "Solutions ": "3",
+    Date: "12/2/2023, 1:20 PM",
+    dateObj: new Date(2023, 11, 2),
+    month: 12,
+    year: 2023,
+    mediaScore: 5,
+    solutionsScore: 3,
+    techScore: 3,
+  },
+  {
+    Name: "Ryan Lewis",
+    Number: "+1234567804",
+    Brand: "InnovateInc",
+    Tech: "4",
+    "Media ": "4",
+    "Solutions ": "5",
+    Date: "12/1/2023, 3:10 PM",
+    dateObj: new Date(2023, 11, 1),
+    month: 12,
+    year: 2023,
+    mediaScore: 4,
+    solutionsScore: 5,
+    techScore: 4,
+  },
+  {
+    Name: "Nicole Walker",
+    Number: "+1234567805",
+    Brand: "GlobalTech",
+    Tech: "5",
+    "Media ": "3",
+    "Solutions ": "4",
+    Date: "11/30/2023, 10:55 AM",
+    dateObj: new Date(2023, 10, 30),
+    month: 11,
+    year: 2023,
+    mediaScore: 3,
+    solutionsScore: 4,
+    techScore: 5,
+  },
+  {
+    Name: "Brandon Hall",
+    Number: "+1234567806",
+    Brand: "TechCorp",
+    Tech: "4",
+    "Media ": "4",
+    "Solutions ": "4",
+    Date: "11/29/2023, 2:40 PM",
+    dateObj: new Date(2023, 10, 29),
+    month: 11,
+    year: 2023,
+    mediaScore: 4,
+    solutionsScore: 4,
+    techScore: 4,
+  },
+  {
+    Name: "Stephanie Young",
+    Number: "+1234567807",
+    Brand: "InnovateInc",
+    Tech: "3",
+    "Media ": "5",
+    "Solutions ": "5",
+    Date: "11/28/2023, 9:25 AM",
+    dateObj: new Date(2023, 10, 28),
+    month: 11,
+    year: 2023,
+    mediaScore: 5,
+    solutionsScore: 5,
+    techScore: 3,
+  },
+  {
+    Name: "Gregory King",
+    Number: "+1234567808",
+    Brand: "GlobalTech",
+    Tech: "5",
+    "Media ": "2",
+    "Solutions ": "3",
+    Date: "11/27/2023, 4:35 PM",
+    dateObj: new Date(2023, 10, 27),
+    month: 11,
+    year: 2023,
+    mediaScore: 2,
+    solutionsScore: 3,
+    techScore: 5,
+  },
+  {
+    Name: "Rachel Wright",
+    Number: "+1234567809",
+    Brand: "TechCorp",
+    Tech: "4",
+    "Media ": "5",
+    "Solutions ": "4",
+    Date: "11/26/2023, 12:15 PM",
+    dateObj: new Date(2023, 10, 26),
+    month: 11,
+    year: 2023,
+    mediaScore: 5,
+    solutionsScore: 4,
+    techScore: 4,
+  },
+];
+
 // Dashboard component
 export default function Home() {
   const [data, setData] = useState([]);
@@ -34,56 +341,71 @@ export default function Home() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get("/api/proxy");
-        const result = response.data;
 
-        // Log the entire sheet data
-        console.log("Complete sheet data:", result);
+        if (USE_MOCK_DATA) {
+          // Use mock data
+          console.log("Using mock data:", MOCK_DATA);
+          setData(MOCK_DATA);
+          setFilteredData(MOCK_DATA);
+          calculateStats(MOCK_DATA);
+        } else {
+          // Fetch from Google Sheets
+          const response = await axios.get("/api/proxy");
+          const result = response.data;
 
-        if (result.data && Array.isArray(result.data)) {
-          // Process data and add formatted date
-          const processedData = result.data.map((item) => {
-            // Parse date string (assuming MM/DD/YYYY format)
-            const dateParts = item.Date
-              ? item.Date.split(", ")[0].split("/")
-              : null;
-            let dateObj = null;
+          // Log the entire sheet data
+          console.log("Complete sheet data:", result);
 
-            if (dateParts && dateParts.length === 3) {
-              // Month is 0-indexed in JavaScript Date
-              dateObj = new Date(dateParts[2], dateParts[0] - 1, dateParts[1]);
-            }
+          if (result.data && Array.isArray(result.data)) {
+            // Process data and add formatted date
+            const processedData = result.data.map((item) => {
+              // Parse date string (assuming MM/DD/YYYY format)
+              const dateParts = item.Date
+                ? item.Date.split(", ")[0].split("/")
+                : null;
+              let dateObj = null;
 
-            // Parse Tech field - handle "NA" or numeric values
-            const techValue = item.Tech === "NA" ? 0 : parseInt(item.Tech) || 0;
+              if (dateParts && dateParts.length === 3) {
+                // Month is 0-indexed in JavaScript Date
+                dateObj = new Date(
+                  dateParts[2],
+                  dateParts[0] - 1,
+                  dateParts[1]
+                );
+              }
 
-            return {
-              ...item,
-              dateObj,
-              month: dateObj ? dateObj.getMonth() + 1 : null, // 1-12
-              year: dateObj ? dateObj.getFullYear() : null,
-              mediaScore: parseInt(item["Media "]) || 0,
-              solutionsScore: parseInt(item["Solutions "]) || 0,
-              techScore: techValue,
-            };
-          });
+              // Parse Tech field - handle "NA" or numeric values
+              const techValue =
+                item.Tech === "NA" ? 0 : parseInt(item.Tech) || 0;
 
-          // Filter to keep only unique phone numbers (first occurrence)
-          const uniqueNumbersMap = new Map();
-          const uniqueData = [];
+              return {
+                ...item,
+                dateObj,
+                month: dateObj ? dateObj.getMonth() + 1 : null, // 1-12
+                year: dateObj ? dateObj.getFullYear() : null,
+                mediaScore: parseInt(item["Media "]) || 0,
+                solutionsScore: parseInt(item["Solutions "]) || 0,
+                techScore: techValue,
+              };
+            });
 
-          processedData.forEach((item) => {
-            if (item.Number && !uniqueNumbersMap.has(item.Number)) {
-              uniqueNumbersMap.set(item.Number, true);
-              uniqueData.push(item);
-            }
-          });
+            // Filter to keep only unique phone numbers
+            const uniqueNumbersMap = new Map();
+            const uniqueData = [];
 
-          console.log("Filtered unique data:", uniqueData);
+            processedData.forEach((item) => {
+              if (item.Number && !uniqueNumbersMap.has(item.Number)) {
+                uniqueNumbersMap.set(item.Number, true);
+                uniqueData.push(item);
+              }
+            });
 
-          setData(uniqueData);
-          setFilteredData(uniqueData);
-          calculateStats(uniqueData);
+            console.log("Filtered unique data:", uniqueData);
+
+            setData(uniqueData);
+            setFilteredData(uniqueData);
+            calculateStats(uniqueData);
+          }
         }
       } catch (err) {
         console.error("Error fetching data:", err);
@@ -208,24 +530,30 @@ export default function Home() {
     calculateStats(filtered);
   };
 
-  // Render a simple bar for ratings
-  const renderRatingBar = (value, max = 5) => {
-    const percentage = (value / max) * 100;
-    const color =
-      percentage >= 60
-        ? "bg-green-500"
-        : percentage >= 40
-        ? "bg-yellow-500"
-        : "bg-red-500";
+  // Get satisfaction level based on score
+  const getSatisfactionLevel = (score) => {
+    if (score >= 4.5)
+      return { level: "Excellent", color: "text-green-600", bg: "bg-green-50" };
+    if (score >= 3.5)
+      return { level: "Good", color: "text-blue-600", bg: "bg-blue-50" };
+    if (score >= 2.5)
+      return { level: "Average", color: "text-yellow-600", bg: "bg-yellow-50" };
+    return { level: "Poor", color: "text-red-600", bg: "bg-red-50" };
+  };
 
-    return (
-      <div className="w-full bg-gray-200 rounded-full h-2.5">
-        <div
-          className={`${color} h-2.5 rounded-full`}
-          style={{ width: `${percentage}%` }}
-        ></div>
-      </div>
-    );
+  // Calculate brand distribution
+  const getBrandDistribution = () => {
+    const brandCounts = {};
+    filteredData.forEach((item) => {
+      if (item.Brand) {
+        brandCounts[item.Brand] = (brandCounts[item.Brand] || 0) + 1;
+      }
+    });
+    return Object.entries(brandCounts).map(([brand, count]) => ({
+      brand,
+      count,
+      percentage: ((count / filteredData.length) * 100).toFixed(1),
+    }));
   };
 
   // Prepare monthly trend data
@@ -269,571 +597,733 @@ export default function Home() {
     return result.sort((a, b) => a.date - b.date);
   };
 
-  // Render line chart
-  const renderLineChart = () => {
+  // Render trend chart
+  const renderTrendChart = () => {
     const monthlyData = prepareMonthlyTrend();
-    if (!monthlyData.length)
-      return (
-        <div className="text-center py-10">
-          No data available for the selected time period
-        </div>
-      );
+    if (!monthlyData.length) return null;
 
-    const maxValue = Math.max(
-      ...monthlyData.map((d) => Math.max(d.mediaAvg, d.solutionsAvg, d.techAvg))
-    );
-
-    const chartHeight = 300;
-    const chartWidth = monthlyData.length * 100;
+    const maxValue = 5; // Since ratings are out of 5
+    const chartHeight = 200;
+    const chartWidth = 600;
     const paddingTop = 20;
     const paddingBottom = 40;
     const paddingLeft = 40;
     const paddingRight = 20;
 
     const graphHeight = chartHeight - paddingTop - paddingBottom;
-    const graphWidth = Math.max(chartWidth, 600) - paddingLeft - paddingRight;
+    const graphWidth = chartWidth - paddingLeft - paddingRight;
 
     // Scale values to fit in the chart
     const scaleY = (value) => {
-      return graphHeight - (value / (maxValue || 5)) * graphHeight + paddingTop;
+      return graphHeight - (value / maxValue) * graphHeight + paddingTop;
     };
 
-    // Generate points for each line
-    const generatePoints = (dataKey) => {
-      const interval = graphWidth / (monthlyData.length - 1 || 1);
-      return monthlyData
-        .map((item, index) => {
-          const x = index * interval + paddingLeft;
-          const y = scaleY(item[dataKey]);
-          return `${x},${y}`;
-        })
-        .join(" ");
+    const scaleX = (index) => {
+      return (index / (monthlyData.length - 1 || 1)) * graphWidth + paddingLeft;
     };
 
-    const mediaPoints = generatePoints("mediaAvg");
-    const solutionsPoints = generatePoints("solutionsAvg");
-    const techPoints = generatePoints("techAvg");
-
-    // Determine which rating has the highest average for each month
-    const highestRatingByMonth = monthlyData.map((item) => {
-      const ratings = {
-        media: item.mediaAvg,
-        solutions: item.solutionsAvg,
-        tech: item.techAvg,
-      };
-
-      const highest = Object.entries(ratings).reduce(
-        (max, [key, value]) => (value > max.value ? { key, value } : max),
-        { key: "", value: -Infinity }
-      );
-
-      return {
-        month: item.name,
-        highestRating: highest.key,
-        value: highest.value,
-      };
-    });
+    // Generate path for overall average
+    const overallPath = monthlyData
+      .map((item, index) => {
+        const x = scaleX(index);
+        const y = scaleY(
+          (item.mediaAvg + item.solutionsAvg + item.techAvg) / 3
+        );
+        return index === 0 ? `M ${x} ${y}` : `L ${x} ${y}`;
+      })
+      .join(" ");
 
     return (
       <div className="relative">
-        <div className="flex justify-end mb-4 space-x-2">
-          <button
-            onClick={() => setChartType("line")}
-            className={`px-3 py-1 text-sm rounded ${
-              chartType === "line" ? "bg-blue-500 text-white" : "bg-gray-200"
-            }`}
-          >
-            Line
-          </button>
-          <button
-            onClick={() => setChartType("bar")}
-            className={`px-3 py-1 text-sm rounded ${
-              chartType === "bar" ? "bg-blue-500 text-white" : "bg-gray-200"
-            }`}
-          >
-            Bar
-          </button>
-          <button
-            onClick={() => setChartType("pie")}
-            className={`px-3 py-1 text-sm rounded ${
-              chartType === "pie" ? "bg-blue-500 text-white" : "bg-gray-200"
-            }`}
-          >
-            Pie
-          </button>
-        </div>
+        <svg width={chartWidth} height={chartHeight} className="w-full">
+          {/* Grid lines */}
+          {[1, 2, 3, 4, 5].map((value) => (
+            <line
+              key={value}
+              x1={paddingLeft}
+              y1={scaleY(value)}
+              x2={chartWidth - paddingRight}
+              y2={scaleY(value)}
+              stroke="#f3f4f6"
+              strokeWidth="1"
+            />
+          ))}
 
-        {chartType === "bar" && (
-          <div className="space-y-8">
-            {monthlyData.map((item, index) => (
-              <div key={index} className="bg-white p-4 rounded-lg shadow">
-                <h4 className="font-medium mb-3">{item.name}</h4>
-                <div className="space-y-4">
-                  <div>
-                    <div className="flex justify-between mb-1">
-                      <span className="text-sm font-medium text-gray-700">
-                        Media
-                      </span>
-                      <span className="text-sm font-medium text-gray-700">
-                        {item.mediaAvg}/5
-                      </span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2.5">
-                      <div
-                        className="bg-purple-500 h-2.5 rounded-full"
-                        style={{ width: `${(item.mediaAvg / 5) * 100}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex justify-between mb-1">
-                      <span className="text-sm font-medium text-gray-700">
-                        Solutions
-                      </span>
-                      <span className="text-sm font-medium text-gray-700">
-                        {item.solutionsAvg}/5
-                      </span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2.5">
-                      <div
-                        className="bg-green-500 h-2.5 rounded-full"
-                        style={{ width: `${(item.solutionsAvg / 5) * 100}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex justify-between mb-1">
-                      <span className="text-sm font-medium text-gray-700">
-                        Tech
-                      </span>
-                      <span className="text-sm font-medium text-gray-700">
-                        {item.techAvg}/5
-                      </span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2.5">
-                      <div
-                        className="bg-yellow-500 h-2.5 rounded-full"
-                        style={{ width: `${(item.techAvg / 5) * 100}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                  <div className="mt-2 text-sm text-gray-600">
-                    Highest Rating:{" "}
-                    <span className="font-medium">
-                      {item.highestRating === "media"
-                        ? "Media"
-                        : item.highestRating === "solutions"
-                        ? "Solutions"
-                        : "Tech"}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+          {/* Trend line */}
+          <path
+            d={overallPath}
+            fill="none"
+            stroke="#6366f1"
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
 
-        {chartType === "pie" && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {highestRatingByMonth.map((item, index) => (
-              <div
+          {/* Data points */}
+          {monthlyData.map((item, index) => {
+            const x = scaleX(index);
+            const y = scaleY(
+              (item.mediaAvg + item.solutionsAvg + item.techAvg) / 3
+            );
+            return (
+              <circle
                 key={index}
-                className="bg-white p-4 rounded-lg shadow text-center"
-              >
-                <h4 className="font-medium mb-2">{item.month}</h4>
-                <div className="relative w-32 h-32 mx-auto">
-                  <svg viewBox="0 0 100 100" className="w-full h-full">
-                    <circle
-                      cx="50"
-                      cy="50"
-                      r="40"
-                      fill={
-                        item.highestRating === "media"
-                          ? "#8884d8"
-                          : item.highestRating === "solutions"
-                          ? "#82ca9d"
-                          : "#FFBB28"
-                      }
-                    />
-                    <text
-                      x="50"
-                      y="50"
-                      textAnchor="middle"
-                      dominantBaseline="middle"
-                      fill="white"
-                      fontSize="12"
-                      fontWeight="bold"
-                    >
-                      {item.highestRating === "media"
-                        ? "Media"
-                        : item.highestRating === "solutions"
-                        ? "Solutions"
-                        : "Tech"}
-                    </text>
-                    <text
-                      x="50"
-                      y="65"
-                      textAnchor="middle"
-                      dominantBaseline="middle"
-                      fill="white"
-                      fontSize="10"
-                    >
-                      {item.value}
-                    </text>
-                  </svg>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+                cx={x}
+                cy={y}
+                r="4"
+                fill="#6366f1"
+                className="hover:r-6 transition-all"
+              />
+            );
+          })}
 
-        <div className="flex justify-center mt-4 space-x-6">
-          <div className="flex items-center">
-            <div className="w-4 h-4 bg-purple-500 rounded-full mr-2"></div>
-            <span className="text-sm">Media</span>
-          </div>
-          <div className="flex items-center">
-            <div className="w-4 h-4 bg-green-500 rounded-full mr-2"></div>
-            <span className="text-sm">Solutions</span>
-          </div>
-          <div className="flex items-center">
-            <div className="w-4 h-4 bg-yellow-500 rounded-full mr-2"></div>
-            <span className="text-sm">Tech</span>
-          </div>
-        </div>
+          {/* Y-axis labels */}
+          {[1, 2, 3, 4, 5].map((value) => (
+            <text
+              key={value}
+              x={paddingLeft - 10}
+              y={scaleY(value) + 4}
+              textAnchor="end"
+              fontSize="12"
+              fill="#6b7280"
+            >
+              {value}
+            </text>
+          ))}
+        </svg>
       </div>
     );
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans">
-      <header className="bg-white shadow-md">
-        <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8 flex justify-between items-center">
-          <h1 className="text-3xl font-bold text-gray-900">CSAT - Dashboard</h1>
-          <button
-            onClick={handleSyncData}
-            disabled={loading || syncing}
-            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-          >
-            {loading || syncing ? (
-              <>
-                <svg
-                  className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-6">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Overview</h1>
+              <p className="text-sm text-gray-500 mt-1">
+                Customer Satisfaction Analytics Dashboard
+              </p>
+            </div>
+            <button
+              onClick={handleSyncData}
+              disabled={loading || syncing}
+              className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 transition-colors"
+            >
+              {loading || syncing ? (
+                <>
+                  <svg
+                    className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  Syncing...
+                </>
+              ) : (
+                <>
+                  <svg
+                    className="-ml-1 mr-2 h-4 w-4"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
                     stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-                Syncing...
-              </>
-            ) : (
-              <>
-                <svg
-                  className="-ml-1 mr-2 h-4 w-4"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                  />
-                </svg>
-                Sync Data
-              </>
-            )}
-          </button>
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                    />
+                  </svg>
+                  Sync Data
+                </>
+              )}
+            </button>
+          </div>
         </div>
-      </header>
+      </div>
 
-      <main className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {loading && !syncing ? (
           <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
           </div>
         ) : error ? (
-          <div className="bg-red-50 border border-red-200 rounded-md p-4 text-red-700">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
             {error}
           </div>
         ) : (
           <>
-            {/* Time Period Filter Tabs */}
-            <div className="mb-6">
-              <div className="sm:hidden">
-                <label htmlFor="timeFilter" className="sr-only">
-                  Select time period
-                </label>
-                <select
-                  id="timeFilter"
-                  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                  value={activeTab}
-                  onChange={(e) => handleFilterChange(e.target.value)}
-                >
-                  <option value="all">All Time</option>
-                  <option value="today">Today</option>
-                  <option value="week">This Week</option>
-                  <option value="month">This Month</option>
-                  <option value="quarter">This Quarter</option>
-                  <option value="year">This Year</option>
-                </select>
-              </div>
-              <div className="hidden sm:block">
-                <nav
-                  className="flex space-x-4 bg-white p-2 rounded-lg shadow"
-                  aria-label="Tabs"
-                >
+            {/* Time Period Filter */}
+            <div className="mb-8">
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { key: "all", label: "All Time" },
+                  { key: "today", label: "Today" },
+                  { key: "week", label: "This Week" },
+                  { key: "month", label: "This Month" },
+                  { key: "quarter", label: "This Quarter" },
+                  { key: "year", label: "This Year" },
+                ].map(({ key, label }) => (
                   <button
-                    onClick={() => handleFilterChange("all")}
-                    className={`px-3 py-2 font-medium text-sm rounded-md ${
-                      activeTab === "all"
-                        ? "bg-indigo-600 text-white"
-                        : "text-gray-500 hover:text-gray-700"
+                    key={key}
+                    onClick={() => handleFilterChange(key)}
+                    className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                      activeTab === key
+                        ? "bg-indigo-600 text-white shadow-sm"
+                        : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
                     }`}
                   >
-                    All Time
+                    {label}
                   </button>
-                  <button
-                    onClick={() => handleFilterChange("today")}
-                    className={`px-3 py-2 font-medium text-sm rounded-md ${
-                      activeTab === "today"
-                        ? "bg-indigo-600 text-white"
-                        : "text-gray-500 hover:text-gray-700"
-                    }`}
-                  >
-                    Today
-                  </button>
-                  <button
-                    onClick={() => handleFilterChange("week")}
-                    className={`px-3 py-2 font-medium text-sm rounded-md ${
-                      activeTab === "week"
-                        ? "bg-indigo-600 text-white"
-                        : "text-gray-500 hover:text-gray-700"
-                    }`}
-                  >
-                    This Week
-                  </button>
-                  <button
-                    onClick={() => handleFilterChange("month")}
-                    className={`px-3 py-2 font-medium text-sm rounded-md ${
-                      activeTab === "month"
-                        ? "bg-indigo-600 text-white"
-                        : "text-gray-500 hover:text-gray-700"
-                    }`}
-                  >
-                    This Month
-                  </button>
-                  <button
-                    onClick={() => handleFilterChange("quarter")}
-                    className={`px-3 py-2 font-medium text-sm rounded-md ${
-                      activeTab === "quarter"
-                        ? "bg-indigo-600 text-white"
-                        : "text-gray-500 hover:text-gray-700"
-                    }`}
-                  >
-                    This Quarter
-                  </button>
-                  <button
-                    onClick={() => handleFilterChange("year")}
-                    className={`px-3 py-2 font-medium text-sm rounded-md ${
-                      activeTab === "year"
-                        ? "bg-indigo-600 text-white"
-                        : "text-gray-500 hover:text-gray-700"
-                    }`}
-                  >
-                    This Year
-                  </button>
-                </nav>
+                ))}
               </div>
             </div>
 
-            {/* Stats Overview */}
+            {/* Main Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              <div className="bg-white overflow-hidden shadow-lg rounded-lg">
-                <div className="px-4 py-5 sm:p-6">
-                  <dt className="text-sm font-medium text-gray-500 truncate">
-                    Total Responses
-                  </dt>
-                  <dd className="mt-1 text-3xl font-semibold text-gray-900">
-                    {stats.totalResponses}
-                  </dd>
+              {/* Total Responses */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">
+                      Total Responses
+                    </p>
+                    <p className="text-3xl font-bold text-gray-900 mt-2">
+                      {stats.totalResponses}
+                    </p>
+                    <div className="flex items-center mt-2">
+                      <span className="text-sm text-green-600 font-medium">
+                        +12%
+                      </span>
+                      <span className="text-sm text-gray-500 ml-1">
+                        vs last period
+                      </span>
+                    </div>
+                  </div>
+                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <svg
+                      className="w-6 h-6 text-blue-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                      />
+                    </svg>
+                  </div>
                 </div>
               </div>
 
-              <div className="bg-white overflow-hidden shadow-lg rounded-lg">
-                <div className="px-4 py-5 sm:p-6">
-                  <dt className="text-sm font-medium text-gray-500 truncate">
-                    Average Media Rating
-                  </dt>
-                  <dd className="mt-1 text-3xl font-semibold text-gray-900">
-                    {stats.mediaAvg}
-                  </dd>
-                  {renderRatingBar(stats.mediaAvg)}
+              {/* Overall Satisfaction */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">
+                      Overall Satisfaction
+                    </p>
+                    <p className="text-3xl font-bold text-gray-900 mt-2">
+                      {stats.overallAvg}
+                    </p>
+                    <div className="flex items-center mt-2">
+                      <div
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          getSatisfactionLevel(stats.overallAvg).bg
+                        } ${getSatisfactionLevel(stats.overallAvg).color}`}
+                      >
+                        {getSatisfactionLevel(stats.overallAvg).level}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                    <svg
+                      className="w-6 h-6 text-green-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </div>
                 </div>
               </div>
 
-              <div className="bg-white overflow-hidden shadow-lg rounded-lg">
-                <div className="px-4 py-5 sm:p-6">
-                  <dt className="text-sm font-medium text-gray-500 truncate">
-                    Average Solutions Rating
-                  </dt>
-                  <dd className="mt-1 text-3xl font-semibold text-gray-900">
-                    {stats.solutionsAvg}
-                  </dd>
-                  {renderRatingBar(stats.solutionsAvg)}
+              {/* Media Rating */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">
+                      Media Rating
+                    </p>
+                    <p className="text-3xl font-bold text-gray-900 mt-2">
+                      {stats.mediaAvg}
+                    </p>
+                    <div className="w-full bg-gray-200 rounded-full h-2 mt-3">
+                      <div
+                        className="bg-purple-500 h-2 rounded-full transition-all duration-300"
+                        style={{ width: `${(stats.mediaAvg / 5) * 100}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                  <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                    <svg
+                      className="w-6 h-6 text-purple-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                      />
+                    </svg>
+                  </div>
                 </div>
               </div>
 
-              <div className="bg-white overflow-hidden shadow-lg rounded-lg">
-                <div className="px-4 py-5 sm:p-6">
-                  <dt className="text-sm font-medium text-gray-500 truncate">
-                    Average Tech Rating
-                  </dt>
-                  <dd className="mt-1 text-3xl font-semibold text-gray-900">
-                    {stats.techAvg}
-                  </dd>
-                  {renderRatingBar(stats.techAvg)}
+              {/* Solutions Rating */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">
+                      Solutions Rating
+                    </p>
+                    <p className="text-3xl font-bold text-gray-900 mt-2">
+                      {stats.solutionsAvg}
+                    </p>
+                    <div className="w-full bg-gray-200 rounded-full h-2 mt-3">
+                      <div
+                        className="bg-emerald-500 h-2 rounded-full transition-all duration-300"
+                        style={{ width: `${(stats.solutionsAvg / 5) * 100}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                  <div className="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center">
+                    <svg
+                      className="w-6 h-6 text-emerald-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                      />
+                    </svg>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Monthly Trends Chart */}
-            {/* <div className="bg-white p-6 rounded-lg shadow-lg mb-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Monthly Rating Trends</h3>
-              {renderLineChart()}
-            </div> */}
+            {/* Charts Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+              {/* Satisfaction Trend */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    Satisfaction Trend
+                  </h3>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 bg-indigo-500 rounded-full"></div>
+                    <span className="text-sm text-gray-600">
+                      Overall Rating
+                    </span>
+                  </div>
+                </div>
+                {renderTrendChart()}
+              </div>
 
-            {/* Data Table */}
-            <div className="bg-white p-6 rounded-lg shadow-lg">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">
-                CSAT Data ({filteredData.length} records)
-              </h3>
+              {/* Brand Distribution */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-6">
+                  Brand Distribution
+                </h3>
+                <div className="space-y-4">
+                  {getBrandDistribution()
+                    .slice(0, 5)
+                    .map((brand, index) => (
+                      <div
+                        key={brand.brand}
+                        className="flex items-center justify-between"
+                      >
+                        <div className="flex items-center space-x-3">
+                          <div
+                            className={`w-3 h-3 rounded-full ${
+                              index === 0
+                                ? "bg-blue-500"
+                                : index === 1
+                                ? "bg-green-500"
+                                : index === 2
+                                ? "bg-yellow-500"
+                                : index === 3
+                                ? "bg-purple-500"
+                                : "bg-red-500"
+                            }`}
+                          ></div>
+                          <span className="text-sm font-medium text-gray-900">
+                            {brand.brand}
+                          </span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-sm text-gray-600">
+                            {brand.count}
+                          </span>
+                          <span className="text-sm font-medium text-gray-900">
+                            {brand.percentage}%
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Detailed Ratings */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+              {/* Media Detailed */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900">Media</h3>
+                  <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                    <svg
+                      className="w-4 h-4 text-purple-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-gray-900 mb-2">
+                    {stats.mediaAvg}
+                  </div>
+                  <div className="text-sm text-gray-600 mb-4">
+                    Average Rating
+                  </div>
+                  <div className="relative w-24 h-24 mx-auto">
+                    <svg
+                      className="w-24 h-24 transform -rotate-90"
+                      viewBox="0 0 100 100"
+                    >
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r="40"
+                        stroke="#e5e7eb"
+                        strokeWidth="8"
+                        fill="none"
+                      />
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r="40"
+                        stroke="#8b5cf6"
+                        strokeWidth="8"
+                        fill="none"
+                        strokeDasharray={`${
+                          (stats.mediaAvg / 5) * 251.2
+                        } 251.2`}
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="text-lg font-bold text-gray-900">
+                        {Math.round((stats.mediaAvg / 5) * 100)}%
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Solutions Detailed */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    Solutions
+                  </h3>
+                  <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                    <svg
+                      className="w-4 h-4 text-emerald-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-gray-900 mb-2">
+                    {stats.solutionsAvg}
+                  </div>
+                  <div className="text-sm text-gray-600 mb-4">
+                    Average Rating
+                  </div>
+                  <div className="relative w-24 h-24 mx-auto">
+                    <svg
+                      className="w-24 h-24 transform -rotate-90"
+                      viewBox="0 0 100 100"
+                    >
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r="40"
+                        stroke="#e5e7eb"
+                        strokeWidth="8"
+                        fill="none"
+                      />
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r="40"
+                        stroke="#10b981"
+                        strokeWidth="8"
+                        fill="none"
+                        strokeDasharray={`${
+                          (stats.solutionsAvg / 5) * 251.2
+                        } 251.2`}
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="text-lg font-bold text-gray-900">
+                        {Math.round((stats.solutionsAvg / 5) * 100)}%
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Tech Detailed */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    Technology
+                  </h3>
+                  <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <svg
+                      className="w-4 h-4 text-blue-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-gray-900 mb-2">
+                    {stats.techAvg}
+                  </div>
+                  <div className="text-sm text-gray-600 mb-4">
+                    Average Rating
+                  </div>
+                  <div className="relative w-24 h-24 mx-auto">
+                    <svg
+                      className="w-24 h-24 transform -rotate-90"
+                      viewBox="0 0 100 100"
+                    >
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r="40"
+                        stroke="#e5e7eb"
+                        strokeWidth="8"
+                        fill="none"
+                      />
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r="40"
+                        stroke="#3b82f6"
+                        strokeWidth="8"
+                        fill="none"
+                        strokeDasharray={`${(stats.techAvg / 5) * 251.2} 251.2`}
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="text-lg font-bold text-gray-900">
+                        {Math.round((stats.techAvg / 5) * 100)}%
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Recent Feedback Table */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+              <div className="px-6 py-4 border-b border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Recent Feedback
+                </h3>
+                <p className="text-sm text-gray-600 mt-1">
+                  {filteredData.length} total responses
+                </p>
+              </div>
               <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th
-                        scope="col"
-                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Name
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Customer
                       </th>
-                      <th
-                        scope="col"
-                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Number
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Brand
                       </th>
-                      <th
-                        scope="col"
-                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Technology
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Media
                       </th>
-                      <th
-                        scope="col"
-                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Solutions
                       </th>
-                      <th
-                        scope="col"
-                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Tech
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Date
                       </th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {filteredData.length === 0 ? (
-                      <tr>
-                        <td
-                          colSpan="7"
-                          className="px-6 py-4 text-center text-gray-500"
-                        >
-                          No data available for the selected time period
+                    {filteredData.slice(0, 10).map((item, index) => (
+                      <tr key={index} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+                              <span className="text-sm font-medium text-gray-600">
+                                {item.Name
+                                  ? item.Name.charAt(0).toUpperCase()
+                                  : "N"}
+                              </span>
+                            </div>
+                            <div className="ml-3">
+                              <div className="text-sm font-medium text-gray-900">
+                                {item.Name}
+                              </div>
+                              <div className="text-sm text-gray-500">
+                                {item.Number}
+                              </div>
+                            </div>
+                          </div>
                         </td>
-                      </tr>
-                    ) : (
-                      filteredData.map((item, index) => (
-                        <tr key={index}>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                            {item.Name}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {item.Number}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
                             {item.Brand}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span
-                              className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                                item.Tech === "NA"
-                                  ? "bg-gray-100 text-gray-800"
-                                  : item.techScore >= 3
-                                  ? "bg-green-100 text-green-800"
-                                  : "bg-red-100 text-red-800"
-                              }`}
-                            >
-                              {item.Tech}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span
-                              className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                                item.mediaScore >= 3
-                                  ? "bg-green-100 text-green-800"
-                                  : "bg-red-100 text-red-800"
-                              }`}
-                            >
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <span className="text-sm font-medium text-gray-900 mr-2">
                               {item["Media "]}
                             </span>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span
-                              className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                                item.solutionsScore >= 3
-                                  ? "bg-green-100 text-green-800"
-                                  : "bg-red-100 text-red-800"
-                              }`}
-                            >
+                            <div className="flex">
+                              {[1, 2, 3, 4, 5].map((star) => (
+                                <svg
+                                  key={star}
+                                  className={`w-4 h-4 ${
+                                    star <= item.mediaScore
+                                      ? "text-yellow-400"
+                                      : "text-gray-300"
+                                  }`}
+                                  fill="currentColor"
+                                  viewBox="0 0 20 20"
+                                >
+                                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                              ))}
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <span className="text-sm font-medium text-gray-900 mr-2">
                               {item["Solutions "]}
                             </span>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {item.Date}
-                          </td>
-                        </tr>
-                      ))
-                    )}
+                            <div className="flex">
+                              {[1, 2, 3, 4, 5].map((star) => (
+                                <svg
+                                  key={star}
+                                  className={`w-4 h-4 ${
+                                    star <= item.solutionsScore
+                                      ? "text-yellow-400"
+                                      : "text-gray-300"
+                                  }`}
+                                  fill="currentColor"
+                                  viewBox="0 0 20 20"
+                                >
+                                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                              ))}
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span
+                            className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                              item.Tech === "NA"
+                                ? "bg-gray-100 text-gray-800"
+                                : item.techScore >= 3
+                                ? "bg-green-100 text-green-800"
+                                : "bg-red-100 text-red-800"
+                            }`}
+                          >
+                            {item.Tech}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {item.Date}
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
