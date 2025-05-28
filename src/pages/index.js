@@ -330,6 +330,13 @@ export default function Home() {
   const [refreshTime, setRefreshTime] = useState(Date.now());
   // Add syncing state to show sync animation
   const [syncing, setSyncing] = useState(false);
+  // Dark mode state
+  const [darkMode, setDarkMode] = useState(false);
+
+  // Toggle dark mode
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
 
   // Function to handle manual data refresh
   const handleSyncData = () => {
@@ -696,66 +703,125 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div
+      className={`min-h-screen transition-colors duration-300 ${
+        darkMode ? "bg-gray-900" : "bg-gray-50"
+      }`}
+    >
       {/* Header */}
-      <div className="bg-white border-b border-gray-200">
+      <div
+        className={`border-b transition-colors duration-300 ${
+          darkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
+        }`}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Overview</h1>
-              <p className="text-sm text-gray-500 mt-1">
+              <h1
+                className={`text-2xl font-bold transition-colors duration-300 ${
+                  darkMode ? "text-white" : "text-gray-900"
+                }`}
+              >
+                Overview
+              </h1>
+              <p
+                className={`text-sm mt-1 transition-colors duration-300 ${
+                  darkMode ? "text-gray-400" : "text-gray-500"
+                }`}
+              >
                 Customer Satisfaction Analytics Dashboard
               </p>
             </div>
-            <button
-              onClick={handleSyncData}
-              disabled={loading || syncing}
-              className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 transition-colors"
-            >
-              {loading || syncing ? (
-                <>
+            <div className="flex items-center space-x-4">
+              {/* Dark Mode Toggle */}
+              <button
+                onClick={toggleDarkMode}
+                className={`p-2 rounded-lg transition-all duration-300 ${
+                  darkMode
+                    ? "bg-gray-700 text-yellow-400 hover:bg-gray-600"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                }`}
+                title={
+                  darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"
+                }
+              >
+                {darkMode ? (
                   <svg
-                    className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  Syncing...
-                </>
-              ) : (
-                <>
-                  <svg
-                    className="-ml-1 mr-2 h-4 w-4"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
+                    className="w-5 h-5"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
                   >
                     <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                      fillRule="evenodd"
+                      d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+                      clipRule="evenodd"
                     />
                   </svg>
-                  Sync Data
-                </>
-              )}
-            </button>
+                ) : (
+                  <svg
+                    className="w-5 h-5"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+                  </svg>
+                )}
+              </button>
+
+              <button
+                onClick={handleSyncData}
+                disabled={loading || syncing}
+                className={`inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 transition-all duration-300 ${
+                  darkMode
+                    ? "focus:ring-offset-gray-800"
+                    : "focus:ring-offset-white"
+                }`}
+              >
+                {loading || syncing ? (
+                  <>
+                    <svg
+                      className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    Syncing...
+                  </>
+                ) : (
+                  <>
+                    <svg
+                      className="-ml-1 mr-2 h-4 w-4"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                      />
+                    </svg>
+                    Sync Data
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -766,7 +832,13 @@ export default function Home() {
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
           </div>
         ) : error ? (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
+          <div
+            className={`border rounded-lg p-4 transition-colors duration-300 ${
+              darkMode
+                ? "bg-red-900 border-red-700 text-red-300"
+                : "bg-red-50 border-red-200 text-red-700"
+            }`}
+          >
             {error}
           </div>
         ) : (
@@ -785,9 +857,11 @@ export default function Home() {
                   <button
                     key={key}
                     onClick={() => handleFilterChange(key)}
-                    className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                    className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-300 ${
                       activeTab === key
                         ? "bg-indigo-600 text-white shadow-sm"
+                        : darkMode
+                        ? "bg-gray-800 text-gray-300 border border-gray-600 hover:bg-gray-700"
                         : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
                     }`}
                   >
@@ -800,27 +874,51 @@ export default function Home() {
             {/* Main Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               {/* Total Responses */}
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div
+                className={`rounded-xl shadow-sm border p-6 transition-all duration-300 ${
+                  darkMode
+                    ? "bg-gray-800 border-gray-700"
+                    : "bg-white border-gray-200"
+                }`}
+              >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">
+                    <p
+                      className={`text-sm font-medium transition-colors duration-300 ${
+                        darkMode ? "text-gray-400" : "text-gray-600"
+                      }`}
+                    >
                       Total Responses
                     </p>
-                    <p className="text-3xl font-bold text-gray-900 mt-2">
+                    <p
+                      className={`text-3xl font-bold mt-2 transition-colors duration-300 ${
+                        darkMode ? "text-white" : "text-gray-900"
+                      }`}
+                    >
                       {stats.totalResponses}
                     </p>
                     <div className="flex items-center mt-2">
                       <span className="text-sm text-green-600 font-medium">
                         +12%
                       </span>
-                      <span className="text-sm text-gray-500 ml-1">
+                      <span
+                        className={`text-sm ml-1 transition-colors duration-300 ${
+                          darkMode ? "text-gray-400" : "text-gray-500"
+                        }`}
+                      >
                         vs last period
                       </span>
                     </div>
                   </div>
-                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <div
+                    className={`w-12 h-12 rounded-lg flex items-center justify-center transition-colors duration-300 ${
+                      darkMode ? "bg-blue-900" : "bg-blue-100"
+                    }`}
+                  >
                     <svg
-                      className="w-6 h-6 text-blue-600"
+                      className={`w-6 h-6 transition-colors duration-300 ${
+                        darkMode ? "text-blue-400" : "text-blue-600"
+                      }`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -837,13 +935,27 @@ export default function Home() {
               </div>
 
               {/* Overall Satisfaction */}
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div
+                className={`rounded-xl shadow-sm border p-6 transition-all duration-300 ${
+                  darkMode
+                    ? "bg-gray-800 border-gray-700"
+                    : "bg-white border-gray-200"
+                }`}
+              >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">
+                    <p
+                      className={`text-sm font-medium transition-colors duration-300 ${
+                        darkMode ? "text-gray-400" : "text-gray-600"
+                      }`}
+                    >
                       Overall Satisfaction
                     </p>
-                    <p className="text-3xl font-bold text-gray-900 mt-2">
+                    <p
+                      className={`text-3xl font-bold mt-2 transition-colors duration-300 ${
+                        darkMode ? "text-white" : "text-gray-900"
+                      }`}
+                    >
                       {stats.overallAvg}
                     </p>
                     <div className="flex items-center mt-2">
@@ -856,9 +968,15 @@ export default function Home() {
                       </div>
                     </div>
                   </div>
-                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                  <div
+                    className={`w-12 h-12 rounded-lg flex items-center justify-center transition-colors duration-300 ${
+                      darkMode ? "bg-green-900" : "bg-green-100"
+                    }`}
+                  >
                     <svg
-                      className="w-6 h-6 text-green-600"
+                      className={`w-6 h-6 transition-colors duration-300 ${
+                        darkMode ? "text-green-400" : "text-green-600"
+                      }`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -875,25 +993,49 @@ export default function Home() {
               </div>
 
               {/* Media Rating */}
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div
+                className={`rounded-xl shadow-sm border p-6 transition-all duration-300 ${
+                  darkMode
+                    ? "bg-gray-800 border-gray-700"
+                    : "bg-white border-gray-200"
+                }`}
+              >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">
+                    <p
+                      className={`text-sm font-medium transition-colors duration-300 ${
+                        darkMode ? "text-gray-400" : "text-gray-600"
+                      }`}
+                    >
                       Media Rating
                     </p>
-                    <p className="text-3xl font-bold text-gray-900 mt-2">
+                    <p
+                      className={`text-3xl font-bold mt-2 transition-colors duration-300 ${
+                        darkMode ? "text-white" : "text-gray-900"
+                      }`}
+                    >
                       {stats.mediaAvg}
                     </p>
-                    <div className="w-full bg-gray-200 rounded-full h-2 mt-3">
+                    <div
+                      className={`w-full rounded-full h-2 mt-3 transition-colors duration-300 ${
+                        darkMode ? "bg-gray-700" : "bg-gray-200"
+                      }`}
+                    >
                       <div
                         className="bg-purple-500 h-2 rounded-full transition-all duration-300"
                         style={{ width: `${(stats.mediaAvg / 5) * 100}%` }}
                       ></div>
                     </div>
                   </div>
-                  <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                  <div
+                    className={`w-12 h-12 rounded-lg flex items-center justify-center transition-colors duration-300 ${
+                      darkMode ? "bg-purple-900" : "bg-purple-100"
+                    }`}
+                  >
                     <svg
-                      className="w-6 h-6 text-purple-600"
+                      className={`w-6 h-6 transition-colors duration-300 ${
+                        darkMode ? "text-purple-400" : "text-purple-600"
+                      }`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -910,25 +1052,49 @@ export default function Home() {
               </div>
 
               {/* Solutions Rating */}
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div
+                className={`rounded-xl shadow-sm border p-6 transition-all duration-300 ${
+                  darkMode
+                    ? "bg-gray-800 border-gray-700"
+                    : "bg-white border-gray-200"
+                }`}
+              >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">
+                    <p
+                      className={`text-sm font-medium transition-colors duration-300 ${
+                        darkMode ? "text-gray-400" : "text-gray-600"
+                      }`}
+                    >
                       Solutions Rating
                     </p>
-                    <p className="text-3xl font-bold text-gray-900 mt-2">
+                    <p
+                      className={`text-3xl font-bold mt-2 transition-colors duration-300 ${
+                        darkMode ? "text-white" : "text-gray-900"
+                      }`}
+                    >
                       {stats.solutionsAvg}
                     </p>
-                    <div className="w-full bg-gray-200 rounded-full h-2 mt-3">
+                    <div
+                      className={`w-full rounded-full h-2 mt-3 transition-colors duration-300 ${
+                        darkMode ? "bg-gray-700" : "bg-gray-200"
+                      }`}
+                    >
                       <div
                         className="bg-emerald-500 h-2 rounded-full transition-all duration-300"
                         style={{ width: `${(stats.solutionsAvg / 5) * 100}%` }}
                       ></div>
                     </div>
                   </div>
-                  <div className="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center">
+                  <div
+                    className={`w-12 h-12 rounded-lg flex items-center justify-center transition-colors duration-300 ${
+                      darkMode ? "bg-emerald-900" : "bg-emerald-100"
+                    }`}
+                  >
                     <svg
-                      className="w-6 h-6 text-emerald-600"
+                      className={`w-6 h-6 transition-colors duration-300 ${
+                        darkMode ? "text-emerald-400" : "text-emerald-600"
+                      }`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -948,14 +1114,28 @@ export default function Home() {
             {/* Charts Section */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
               {/* Satisfaction Trend */}
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div
+                className={`rounded-xl shadow-sm border p-6 transition-all duration-300 ${
+                  darkMode
+                    ? "bg-gray-800 border-gray-700"
+                    : "bg-white border-gray-200"
+                }`}
+              >
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-semibold text-gray-900">
+                  <h3
+                    className={`text-lg font-semibold transition-colors duration-300 ${
+                      darkMode ? "text-white" : "text-gray-900"
+                    }`}
+                  >
                     Satisfaction Trend
                   </h3>
                   <div className="flex items-center space-x-2">
                     <div className="w-3 h-3 bg-indigo-500 rounded-full"></div>
-                    <span className="text-sm text-gray-600">
+                    <span
+                      className={`text-sm transition-colors duration-300 ${
+                        darkMode ? "text-gray-400" : "text-gray-600"
+                      }`}
+                    >
                       Overall Rating
                     </span>
                   </div>
@@ -964,8 +1144,18 @@ export default function Home() {
               </div>
 
               {/* Brand Distribution */}
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-6">
+              <div
+                className={`rounded-xl shadow-sm border p-6 transition-all duration-300 ${
+                  darkMode
+                    ? "bg-gray-800 border-gray-700"
+                    : "bg-white border-gray-200"
+                }`}
+              >
+                <h3
+                  className={`text-lg font-semibold mb-6 transition-colors duration-300 ${
+                    darkMode ? "text-white" : "text-gray-900"
+                  }`}
+                >
                   Brand Distribution
                 </h3>
                 <div className="space-y-4">
@@ -990,15 +1180,27 @@ export default function Home() {
                                 : "bg-red-500"
                             }`}
                           ></div>
-                          <span className="text-sm font-medium text-gray-900">
+                          <span
+                            className={`text-sm font-medium transition-colors duration-300 ${
+                              darkMode ? "text-white" : "text-gray-900"
+                            }`}
+                          >
                             {brand.brand}
                           </span>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <span className="text-sm text-gray-600">
+                          <span
+                            className={`text-sm transition-colors duration-300 ${
+                              darkMode ? "text-gray-400" : "text-gray-600"
+                            }`}
+                          >
                             {brand.count}
                           </span>
-                          <span className="text-sm font-medium text-gray-900">
+                          <span
+                            className={`text-sm font-medium transition-colors duration-300 ${
+                              darkMode ? "text-white" : "text-gray-900"
+                            }`}
+                          >
                             {brand.percentage}%
                           </span>
                         </div>
@@ -1011,12 +1213,30 @@ export default function Home() {
             {/* Detailed Ratings */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
               {/* Media Detailed */}
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div
+                className={`rounded-xl shadow-sm border p-6 transition-all duration-300 ${
+                  darkMode
+                    ? "bg-gray-800 border-gray-700"
+                    : "bg-white border-gray-200"
+                }`}
+              >
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900">Media</h3>
-                  <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                  <h3
+                    className={`text-lg font-semibold transition-colors duration-300 ${
+                      darkMode ? "text-white" : "text-gray-900"
+                    }`}
+                  >
+                    Media
+                  </h3>
+                  <div
+                    className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors duration-300 ${
+                      darkMode ? "bg-purple-900" : "bg-purple-100"
+                    }`}
+                  >
                     <svg
-                      className="w-4 h-4 text-purple-600"
+                      className={`w-4 h-4 transition-colors duration-300 ${
+                        darkMode ? "text-purple-400" : "text-purple-600"
+                      }`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -1031,10 +1251,18 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-gray-900 mb-2">
+                  <div
+                    className={`text-3xl font-bold mb-2 transition-colors duration-300 ${
+                      darkMode ? "text-white" : "text-gray-900"
+                    }`}
+                  >
                     {stats.mediaAvg}
                   </div>
-                  <div className="text-sm text-gray-600 mb-4">
+                  <div
+                    className={`text-sm mb-4 transition-colors duration-300 ${
+                      darkMode ? "text-gray-400" : "text-gray-600"
+                    }`}
+                  >
                     Average Rating
                   </div>
                   <div className="relative w-24 h-24 mx-auto">
@@ -1046,7 +1274,7 @@ export default function Home() {
                         cx="50"
                         cy="50"
                         r="40"
-                        stroke="#e5e7eb"
+                        stroke={darkMode ? "#374151" : "#e5e7eb"}
                         strokeWidth="8"
                         fill="none"
                       />
@@ -1064,7 +1292,11 @@ export default function Home() {
                       />
                     </svg>
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-lg font-bold text-gray-900">
+                      <span
+                        className={`text-lg font-bold transition-colors duration-300 ${
+                          darkMode ? "text-white" : "text-gray-900"
+                        }`}
+                      >
                         {Math.round((stats.mediaAvg / 5) * 100)}%
                       </span>
                     </div>
@@ -1073,14 +1305,30 @@ export default function Home() {
               </div>
 
               {/* Solutions Detailed */}
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div
+                className={`rounded-xl shadow-sm border p-6 transition-all duration-300 ${
+                  darkMode
+                    ? "bg-gray-800 border-gray-700"
+                    : "bg-white border-gray-200"
+                }`}
+              >
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900">
+                  <h3
+                    className={`text-lg font-semibold transition-colors duration-300 ${
+                      darkMode ? "text-white" : "text-gray-900"
+                    }`}
+                  >
                     Solutions
                   </h3>
-                  <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                  <div
+                    className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors duration-300 ${
+                      darkMode ? "bg-emerald-900" : "bg-emerald-100"
+                    }`}
+                  >
                     <svg
-                      className="w-4 h-4 text-emerald-600"
+                      className={`w-4 h-4 transition-colors duration-300 ${
+                        darkMode ? "text-emerald-400" : "text-emerald-600"
+                      }`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -1095,10 +1343,18 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-gray-900 mb-2">
+                  <div
+                    className={`text-3xl font-bold mb-2 transition-colors duration-300 ${
+                      darkMode ? "text-white" : "text-gray-900"
+                    }`}
+                  >
                     {stats.solutionsAvg}
                   </div>
-                  <div className="text-sm text-gray-600 mb-4">
+                  <div
+                    className={`text-sm mb-4 transition-colors duration-300 ${
+                      darkMode ? "text-gray-400" : "text-gray-600"
+                    }`}
+                  >
                     Average Rating
                   </div>
                   <div className="relative w-24 h-24 mx-auto">
@@ -1110,7 +1366,7 @@ export default function Home() {
                         cx="50"
                         cy="50"
                         r="40"
-                        stroke="#e5e7eb"
+                        stroke={darkMode ? "#374151" : "#e5e7eb"}
                         strokeWidth="8"
                         fill="none"
                       />
@@ -1128,7 +1384,11 @@ export default function Home() {
                       />
                     </svg>
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-lg font-bold text-gray-900">
+                      <span
+                        className={`text-lg font-bold transition-colors duration-300 ${
+                          darkMode ? "text-white" : "text-gray-900"
+                        }`}
+                      >
                         {Math.round((stats.solutionsAvg / 5) * 100)}%
                       </span>
                     </div>
@@ -1137,14 +1397,30 @@ export default function Home() {
               </div>
 
               {/* Tech Detailed */}
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div
+                className={`rounded-xl shadow-sm border p-6 transition-all duration-300 ${
+                  darkMode
+                    ? "bg-gray-800 border-gray-700"
+                    : "bg-white border-gray-200"
+                }`}
+              >
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900">
+                  <h3
+                    className={`text-lg font-semibold transition-colors duration-300 ${
+                      darkMode ? "text-white" : "text-gray-900"
+                    }`}
+                  >
                     Technology
                   </h3>
-                  <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <div
+                    className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors duration-300 ${
+                      darkMode ? "bg-blue-900" : "bg-blue-100"
+                    }`}
+                  >
                     <svg
-                      className="w-4 h-4 text-blue-600"
+                      className={`w-4 h-4 transition-colors duration-300 ${
+                        darkMode ? "text-blue-400" : "text-blue-600"
+                      }`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -1159,10 +1435,18 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-gray-900 mb-2">
+                  <div
+                    className={`text-3xl font-bold mb-2 transition-colors duration-300 ${
+                      darkMode ? "text-white" : "text-gray-900"
+                    }`}
+                  >
                     {stats.techAvg}
                   </div>
-                  <div className="text-sm text-gray-600 mb-4">
+                  <div
+                    className={`text-sm mb-4 transition-colors duration-300 ${
+                      darkMode ? "text-gray-400" : "text-gray-600"
+                    }`}
+                  >
                     Average Rating
                   </div>
                   <div className="relative w-24 h-24 mx-auto">
@@ -1174,7 +1458,7 @@ export default function Home() {
                         cx="50"
                         cy="50"
                         r="40"
-                        stroke="#e5e7eb"
+                        stroke={darkMode ? "#374151" : "#e5e7eb"}
                         strokeWidth="8"
                         fill="none"
                       />
@@ -1190,7 +1474,11 @@ export default function Home() {
                       />
                     </svg>
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-lg font-bold text-gray-900">
+                      <span
+                        className={`text-lg font-bold transition-colors duration-300 ${
+                          darkMode ? "text-white" : "text-gray-900"
+                        }`}
+                      >
                         {Math.round((stats.techAvg / 5) * 100)}%
                       </span>
                     </div>
@@ -1200,69 +1488,152 @@ export default function Home() {
             </div>
 
             {/* Recent Feedback Table */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-              <div className="px-6 py-4 border-b border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900">
+            <div
+              className={`rounded-xl shadow-sm border transition-all duration-300 ${
+                darkMode
+                  ? "bg-gray-800 border-gray-700"
+                  : "bg-white border-gray-200"
+              }`}
+            >
+              <div
+                className={`px-6 py-4 border-b transition-colors duration-300 ${
+                  darkMode ? "border-gray-700" : "border-gray-200"
+                }`}
+              >
+                <h3
+                  className={`text-lg font-semibold transition-colors duration-300 ${
+                    darkMode ? "text-white" : "text-gray-900"
+                  }`}
+                >
                   Recent Feedback
                 </h3>
-                <p className="text-sm text-gray-600 mt-1">
+                <p
+                  className={`text-sm mt-1 transition-colors duration-300 ${
+                    darkMode ? "text-gray-400" : "text-gray-600"
+                  }`}
+                >
                   {filteredData.length} total responses
                 </p>
               </div>
               <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
+                  <thead
+                    className={`transition-colors duration-300 ${
+                      darkMode ? "bg-gray-700" : "bg-gray-50"
+                    }`}
+                  >
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th
+                        className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider transition-colors duration-300 ${
+                          darkMode ? "text-gray-300" : "text-gray-500"
+                        }`}
+                      >
                         Customer
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th
+                        className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider transition-colors duration-300 ${
+                          darkMode ? "text-gray-300" : "text-gray-500"
+                        }`}
+                      >
                         Brand
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th
+                        className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider transition-colors duration-300 ${
+                          darkMode ? "text-gray-300" : "text-gray-500"
+                        }`}
+                      >
                         Media
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th
+                        className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider transition-colors duration-300 ${
+                          darkMode ? "text-gray-300" : "text-gray-500"
+                        }`}
+                      >
                         Solutions
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th
+                        className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider transition-colors duration-300 ${
+                          darkMode ? "text-gray-300" : "text-gray-500"
+                        }`}
+                      >
                         Tech
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th
+                        className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider transition-colors duration-300 ${
+                          darkMode ? "text-gray-300" : "text-gray-500"
+                        }`}
+                      >
                         Date
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody
+                    className={`divide-y transition-colors duration-300 ${
+                      darkMode
+                        ? "bg-gray-800 divide-gray-700"
+                        : "bg-white divide-gray-200"
+                    }`}
+                  >
                     {filteredData.slice(0, 10).map((item, index) => (
-                      <tr key={index} className="hover:bg-gray-50">
+                      <tr
+                        key={index}
+                        className={`transition-colors duration-300 ${
+                          darkMode ? "hover:bg-gray-700" : "hover:bg-gray-50"
+                        }`}
+                      >
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
-                            <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-                              <span className="text-sm font-medium text-gray-600">
+                            <div
+                              className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-300 ${
+                                darkMode ? "bg-gray-600" : "bg-gray-200"
+                              }`}
+                            >
+                              <span
+                                className={`text-sm font-medium transition-colors duration-300 ${
+                                  darkMode ? "text-gray-300" : "text-gray-600"
+                                }`}
+                              >
                                 {item.Name
                                   ? item.Name.charAt(0).toUpperCase()
                                   : "N"}
                               </span>
                             </div>
                             <div className="ml-3">
-                              <div className="text-sm font-medium text-gray-900">
+                              <div
+                                className={`text-sm font-medium transition-colors duration-300 ${
+                                  darkMode ? "text-white" : "text-gray-900"
+                                }`}
+                              >
                                 {item.Name}
                               </div>
-                              <div className="text-sm text-gray-500">
+                              <div
+                                className={`text-sm transition-colors duration-300 ${
+                                  darkMode ? "text-gray-400" : "text-gray-500"
+                                }`}
+                              >
                                 {item.Number}
                               </div>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                          <span
+                            className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full transition-colors duration-300 ${
+                              darkMode
+                                ? "bg-gray-700 text-gray-300"
+                                : "bg-gray-100 text-gray-800"
+                            }`}
+                          >
                             {item.Brand}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
-                            <span className="text-sm font-medium text-gray-900 mr-2">
+                            <span
+                              className={`text-sm font-medium mr-2 transition-colors duration-300 ${
+                                darkMode ? "text-white" : "text-gray-900"
+                              }`}
+                            >
                               {item["Media "]}
                             </span>
                             <div className="flex">
@@ -1272,6 +1643,8 @@ export default function Home() {
                                   className={`w-4 h-4 ${
                                     star <= item.mediaScore
                                       ? "text-yellow-400"
+                                      : darkMode
+                                      ? "text-gray-600"
                                       : "text-gray-300"
                                   }`}
                                   fill="currentColor"
@@ -1285,7 +1658,11 @@ export default function Home() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
-                            <span className="text-sm font-medium text-gray-900 mr-2">
+                            <span
+                              className={`text-sm font-medium mr-2 transition-colors duration-300 ${
+                                darkMode ? "text-white" : "text-gray-900"
+                              }`}
+                            >
                               {item["Solutions "]}
                             </span>
                             <div className="flex">
@@ -1295,6 +1672,8 @@ export default function Home() {
                                   className={`w-4 h-4 ${
                                     star <= item.solutionsScore
                                       ? "text-yellow-400"
+                                      : darkMode
+                                      ? "text-gray-600"
                                       : "text-gray-300"
                                   }`}
                                   fill="currentColor"
@@ -1310,7 +1689,9 @@ export default function Home() {
                           <span
                             className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
                               item.Tech === "NA"
-                                ? "bg-gray-100 text-gray-800"
+                                ? darkMode
+                                  ? "bg-gray-700 text-gray-300"
+                                  : "bg-gray-100 text-gray-800"
                                 : item.techScore >= 3
                                 ? "bg-green-100 text-green-800"
                                 : "bg-red-100 text-red-800"
@@ -1319,7 +1700,11 @@ export default function Home() {
                             {item.Tech}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td
+                          className={`px-6 py-4 whitespace-nowrap text-sm transition-colors duration-300 ${
+                            darkMode ? "text-gray-400" : "text-gray-500"
+                          }`}
+                        >
                           {item.Date}
                         </td>
                       </tr>
