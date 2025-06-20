@@ -16,12 +16,7 @@ export default function SolutionsPage() {
         const response = await axios.get("/api/proxy?sheet=SOLUTIONS");
 
         if (response.data && Array.isArray(response.data)) {
-          const processedData = response.data.map((item) => ({
-            ...item,
-            rating: parseFloat(item.Rating) || 0,
-            dateObj: parseDate(item.Date),
-          }));
-          setData(processedData);
+          setData(response.data);
         }
       } catch (err) {
         console.error("Error fetching solutions data:", err);
@@ -33,13 +28,6 @@ export default function SolutionsPage() {
 
     fetchData();
   }, []);
-
-  const parseDate = (dateString) => {
-    if (!dateString) return null;
-    const parts = dateString.split(", ")[0].split("/");
-    if (parts.length !== 3) return null;
-    return new Date(parts[2], parts[0] - 1, parts[1]);
-  };
 
   return (
     <div
@@ -134,21 +122,91 @@ export default function SolutionsPage() {
                         darkMode ? "text-gray-300" : "text-gray-500"
                       }`}
                     >
-                      Customer
+                      Whatsapp Number
                     </th>
                     <th
                       className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${
                         darkMode ? "text-gray-300" : "text-gray-500"
                       }`}
                     >
-                      Rating
+                      Overall Satisfaction
                     </th>
                     <th
                       className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${
                         darkMode ? "text-gray-300" : "text-gray-500"
                       }`}
                     >
-                      Date
+                      Likelihood To Recommend
+                    </th>
+                    <th
+                      className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${
+                        darkMode ? "text-gray-300" : "text-gray-500"
+                      }`}
+                    >
+                      North Star Metrics
+                    </th>
+                    <th
+                      className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${
+                        darkMode ? "text-gray-300" : "text-gray-500"
+                      }`}
+                    >
+                      Senior Leadership Involvement
+                    </th>
+                    <th
+                      className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${
+                        darkMode ? "text-gray-300" : "text-gray-500"
+                      }`}
+                    >
+                      Strategy Execution
+                    </th>
+                    <th
+                      className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${
+                        darkMode ? "text-gray-300" : "text-gray-500"
+                      }`}
+                    >
+                      Team Collaboration
+                    </th>
+                    <th
+                      className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${
+                        darkMode ? "text-gray-300" : "text-gray-500"
+                      }`}
+                    >
+                      Brand Understanding
+                    </th>
+                    <th
+                      className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${
+                        darkMode ? "text-gray-300" : "text-gray-500"
+                      }`}
+                    >
+                      Data Effectiveness
+                    </th>
+                    <th
+                      className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${
+                        darkMode ? "text-gray-300" : "text-gray-500"
+                      }`}
+                    >
+                      Team Proactivity
+                    </th>
+                    <th
+                      className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${
+                        darkMode ? "text-gray-300" : "text-gray-500"
+                      }`}
+                    >
+                      Meeting Business Goals
+                    </th>
+                    <th
+                      className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${
+                        darkMode ? "text-gray-300" : "text-gray-500"
+                      }`}
+                    >
+                      Created At
+                    </th>
+                    <th
+                      className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${
+                        darkMode ? "text-gray-300" : "text-gray-500"
+                      }`}
+                    >
+                      Additional Comments
                     </th>
                   </tr>
                 </thead>
@@ -164,76 +222,96 @@ export default function SolutionsPage() {
                         darkMode ? "hover:bg-[#4B5563]" : "hover:bg-gray-50"
                       }`}
                     >
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div
-                            className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                              darkMode ? "bg-[#374151]" : "bg-gray-100"
-                            }`}
-                          >
-                            <span
-                              className={`text-sm font-medium ${
-                                darkMode ? "text-gray-300" : "text-gray-600"
-                              }`}
-                            >
-                              {item.Name
-                                ? item.Name.charAt(0).toUpperCase()
-                                : "N"}
-                            </span>
-                          </div>
-                          <div className="ml-4">
-                            <div
-                              className={`text-sm font-medium ${
-                                darkMode ? "text-white" : "text-gray-900"
-                              }`}
-                            >
-                              {item.Name}
-                            </div>
-                            <div
-                              className={`text-sm ${
-                                darkMode ? "text-gray-400" : "text-gray-500"
-                              }`}
-                            >
-                              {item.Number}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <span
-                            className={`text-sm font-medium mr-2 ${
-                              darkMode ? "text-white" : "text-gray-900"
-                            }`}
-                          >
-                            {item.Rating}
-                          </span>
-                          <div className="flex">
-                            {[1, 2, 3, 4, 5].map((star) => (
-                              <svg
-                                key={star}
-                                className={`w-4 h-4 ${
-                                  star <= item.rating
-                                    ? "text-yellow-400"
-                                    : darkMode
-                                    ? "text-gray-600"
-                                    : "text-gray-300"
-                                }`}
-                                fill="currentColor"
-                                viewBox="0 0 20 20"
-                              >
-                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                              </svg>
-                            ))}
-                          </div>
-                        </div>
+                      <td
+                        className={`px-6 py-4 whitespace-nowrap text-sm ${
+                          darkMode ? "text-gray-300" : "text-gray-900"
+                        }`}
+                      >
+                        {item["Whatsapp Number"]}
                       </td>
                       <td
                         className={`px-6 py-4 whitespace-nowrap text-sm ${
-                          darkMode ? "text-gray-400" : "text-gray-500"
+                          darkMode ? "text-gray-300" : "text-gray-900"
                         }`}
                       >
-                        {item.Date}
+                        {item["Overall Satisfaction"]}
+                      </td>
+                      <td
+                        className={`px-6 py-4 whitespace-nowrap text-sm ${
+                          darkMode ? "text-gray-300" : "text-gray-900"
+                        }`}
+                      >
+                        {item["Likelihood To Recommend"]}
+                      </td>
+                      <td
+                        className={`px-6 py-4 whitespace-nowrap text-sm ${
+                          darkMode ? "text-gray-300" : "text-gray-900"
+                        }`}
+                      >
+                        {item["North Star Metrics"]}
+                      </td>
+                      <td
+                        className={`px-6 py-4 whitespace-nowrap text-sm ${
+                          darkMode ? "text-gray-300" : "text-gray-900"
+                        }`}
+                      >
+                        {item["Senior LeaderShip Involvement"]}
+                      </td>
+                      <td
+                        className={`px-6 py-4 whitespace-nowrap text-sm ${
+                          darkMode ? "text-gray-300" : "text-gray-900"
+                        }`}
+                      >
+                        {item["Strategy Execution"]}
+                      </td>
+                      <td
+                        className={`px-6 py-4 whitespace-nowrap text-sm ${
+                          darkMode ? "text-gray-300" : "text-gray-900"
+                        }`}
+                      >
+                        {item["Team Collabration"]}
+                      </td>
+                      <td
+                        className={`px-6 py-4 whitespace-nowrap text-sm ${
+                          darkMode ? "text-gray-300" : "text-gray-900"
+                        }`}
+                      >
+                        {item["Brand Understanding"]}
+                      </td>
+                      <td
+                        className={`px-6 py-4 whitespace-nowrap text-sm ${
+                          darkMode ? "text-gray-300" : "text-gray-900"
+                        }`}
+                      >
+                        {item["Data Effectiveness"]}
+                      </td>
+                      <td
+                        className={`px-6 py-4 whitespace-nowrap text-sm ${
+                          darkMode ? "text-gray-300" : "text-gray-900"
+                        }`}
+                      >
+                        {item["Team Proactivity"]}
+                      </td>
+                      <td
+                        className={`px-6 py-4 whitespace-nowrap text-sm ${
+                          darkMode ? "text-gray-300" : "text-gray-900"
+                        }`}
+                      >
+                        {item["Meeting Business Goals"]}
+                      </td>
+                      <td
+                        className={`px-6 py-4 whitespace-nowrap text-sm ${
+                          darkMode ? "text-gray-300" : "text-gray-900"
+                        }`}
+                      >
+                        {item["CreatedAt"]}
+                      </td>
+                      <td
+                        className={`px-6 py-4 text-sm ${
+                          darkMode ? "text-gray-300" : "text-gray-900"
+                        }`}
+                      >
+                        {item["Additional Comments"]}
                       </td>
                     </tr>
                   ))}
