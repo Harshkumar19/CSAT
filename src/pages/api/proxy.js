@@ -1,30 +1,30 @@
-// Next.js API route to proxy requests to external API
-// This bypasses CORS issues by making the request server-side
+import { google } from "googleapis";
 
-import axios from 'axios';
+const SHEET_ID = "1OWtO8jYeNFwTpF6movC3o2xDkXlSohTPowiJVYq4cXY";
 
-export default async function handler(req, res) {
-  // Set CORS headers to allow requests from any origin
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  if (req.method === 'OPTIONS') {
-    // Handle preflight request
-    return res.status(200).end();
-  }
-
-  try {
-    // Make request to external API
-    const response = await axios.get('https://schbangbotreal.vercel.app/api/getMainData');
-    
-    // Return the data from the external API
-    return res.status(200).json(response.data);
-  } catch (error) {
-    console.error('Error proxying API request:', error);
-    return res.status(500).json({ 
-      message: 'Error fetching data from external API',
-      error: error.message 
+export async function fetchSheetData(tabName) {
+  const auth = new google.auth.GoogleAuth({
+    credentials: {
+      client_email: process.env.GOOGLE_CLIENT_EMAIL,
+      private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, "\n"),
+    },
+    scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"],
+  });
+  const sheets = google.sheets({ version: "v4", auth });
+  const res = await sheets.spreadsheets.values.get({
+    spreadsheetId: SHEET_ID,
+    range: tabName,
+  });
+  const rows = res.data.values;
+  if (!rows || rows.length < 2) return [];
+  const headers = rows[0];
+  return rows.slice(1).map((row) => {
+    const obj = {};
+    headers.forEach((header, i) => {
+      obj[header] = row[i] || "";
     });
-  }
+    return obj;
+  });
 }
+
+// No default export; this is now a utility, not an API route.
